@@ -1,0 +1,58 @@
+ItemLoad: '[&3XK-Forge&f]&4 item&e文件夹配置 &a加载完成'
+MapLoad: '[&3XK-Forge&f]&4 map&e文件夹配置 &a加载完成'
+ProbabilityLoad: '[&3XK-Forge&f]&4 probability&e文件夹配置 &a加载完成'
+
+ConfigLoad: '[&3XK-Forge&f]&e config.yml &a加载完成'
+LevelLoad: '[&3XK-Forge&f]&e level.yml &a加载完成'
+StrengthItemLoad: '[&3XK-Forge&f]&e item.yml &a加载完成'
+MessageLoad: '[&3XK-Forge&f]&e message.yml &a加载完成'
+
+ItemNoFound: '[&3XK-Forge&f]&e %item% &4未在item文件夹下的配置文件中找到'
+MapNoFound: '[&3XK-Forge&f]&e %item% &4未在map文件夹下的配置文件中找到'
+MaterialNoFound: '[&3XK-Forge&f]&e该类型 &4 %material% &e不存在'
+
+AddExp: '[&3XK-Forge&f]&a恭喜 &e%player% &a增加 &4%exp% &a点锻造经验'
+UpLevel: '[&3XK-Forge&f]&a恭喜 &e%player% &a升到 &4%level% &a级'
+
+NoMaterial: '[&3XK-Forge&f]&4背包中的材料不足！'
+NoLevel: '[&3XK-Forge&f]&4你的锻造等级不够'
+NoStudy: '[&3XK-Forge&f]&e该图纸无法学习'
+
+ItemSuccess: '[&3XK-Forge&f]&e锻造完成!！&a物品已经发送到背包！！'
+CommandSuccess: '[&3XK-Forge&f]&e锻造完成!！&a命令组已经执行！！'
+
+CommandError: '[&3XK-Forge&f]&e被执行的命令出现问题！&4%command%'
+
+Command:
+  Reload: '[&3XK-Forge&f]&e重载完成！！'
+  Look:
+    - '&0-&8 --&7 ---&c ----&4 -----&b 当前等级 &4 -----&c ----&7 ---&8 --&0 -'
+    - '&e当前等级: &a%level%'
+    - '&e当前经验: &a%exp%'
+    - '&e升级所需: &a%needExp%'
+    - '&e等级称谓: &a%name%'
+  ItemGive: '[&3XK-Forge&f]&e已将物品 &3%item% &e发送到你的背包'
+  ItemError:
+   - '[&3XK-Forge&f] 指令 item 参数不足'
+   - '[&3XK-Forge&f] 正确用法：'
+   - '[&3XK-Forge&f] /forge item get [&7物品名&f] [&7数量&f] - 给予自己物品'
+   - '[&3XK-Forge&f] /forge item give [&7玩家&f] [&7物品名&f] [&7数量&f] - 给予指定玩家物品'
+  Study: '[&3XK-Forge&f]&e恭喜你已成功学会 %item%'
+  StudyError:
+    - '[&3XK-Forge&f] 指令 study 参数不足'
+    - '[&3XK-Forge&f] 正确用法：'
+    - '[&3XK-Forge&f] /forge study get [&7玩家&f] [&7物品名&f] - 让指定玩家学会指定图纸'
+  Level:
+    - '[&3XK-Forge&f] 指令 level 参数不足'
+    - '[&3XK-Forge&f] 正确用法：'
+    - '[&3XK-Forge&f] /forge level set [&7玩家&f] [&7等级&f] - 设置玩家为指定等级'
+    - '[&3XK-Forge&f] /forge level add [&7玩家&f] [&7等级&f] - 增加玩家指定等级'
+  Exp:
+    - '[&3XK-Forge&f] 指令 exp 参数不足'
+    - '[&3XK-Forge&f] 正确用法：'
+    - '[&3XK-Forge&f] /forge exp [&7玩家&f] [&7经验&f] - 增加玩家指定经验'
+  HasMap: '[&3XK-Forge&f]&4你已经学会 %item% !&e请勿重复学习'
+
+
+
+

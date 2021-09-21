@@ -1,0 +1,22 @@
+上一页:
+  Name: '&3上一页'
+  Material: 'arrow'
+下一页:
+  Name: '&3下一页'
+  Material: 'arrow'
+橙色玻璃板:
+  Name: '&r'
+  Material: 'orange_stained_glass_pane'
+强度石:
+  Name: '&3强度石'
+  Material: 'emerald'
+锻造按钮:
+  Name: '&a点击锻造'
+  Material: 'anvil'
+强度石所在:
+  Name: '&a这里是强度石的位置'
+  Material: 'emerald'
+  Lore:
+    - '&a点击背包的强度石进行替换'
+    - '&a当此处是强度石的时候'
+    - '&a锻造即可通过强度石提升强度'
