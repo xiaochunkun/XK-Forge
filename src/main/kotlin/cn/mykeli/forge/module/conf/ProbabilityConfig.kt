@@ -45,8 +45,6 @@ object ProbabilityConfig {
         console().sendMessage(MessageConfig.proLoad)
     }
 
-
-
     /**
      * 用来获取配置文件的类
      * @author 小坤

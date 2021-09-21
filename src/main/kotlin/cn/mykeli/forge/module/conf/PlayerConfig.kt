@@ -95,6 +95,7 @@ class PlayerConfig constructor(player: Player) {
         val needExp = needExp()
         this.exp += addExpEvent.num
         if (this.exp >= needExp) {
+            this.exp -= LevelConfig.level[level - 1].exp
             val upLevelEvent = PlayerUpLevelEvent(player, this.level, this.level + 1)
             upLevelEvent.call()
             if (!upLevelEvent.isCancelled) {
