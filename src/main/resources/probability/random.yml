@@ -1,0 +1,65 @@
+随机品质:
+  Type: 'random'
+  粗糙:
+    #概率权重，必须大于0
+    Weight: 3
+    Attribute:
+      #配置中的节点
+      等级:
+        #数值类型，fixed固定内容, random随机整数(value1必须小于value2)，
+        #strength强度类型，list随机文本，double随机小数(Start必须小于End)
+        Type: fixed
+        Value: '&7粗糙'
+      暴击几率:
+        Type: random
+        Value1: 3
+        Value2: 5
+      攻击力1:
+        Type: strength
+        Base: 50
+        Add: 50
+      攻击力2:
+        Type: strength
+        Base: 150
+        Add: 200
+      吸血倍率:
+        Type: double
+        Decimal: 2
+        Start: 1.00
+        End: 2.00
+      前缀词:
+        Type: list
+        List:
+          - 开裂的
+          - 生锈的
+          - 弯曲的
+  普通:
+    Weight: 2
+    Attribute:
+      等级:
+        Type: fixed
+        Value: '&6普通'
+      暴击几率:
+        Type: random
+        Value1: 4
+        Value2: 6
+      攻击力1:
+        Type: strength
+        Base: 100
+        Add: 50
+      攻击力2:
+        Type: strength
+        Base: 250
+        Add: 200
+      吸血倍率:
+        Type: double
+        #显示的小数位
+        Decimal: 2
+        Start: 2.15
+        End: 4.55
+      前缀词:
+        Type: list
+        List:
+          - 淬火的
+          - 平衡的
+          - 精良的

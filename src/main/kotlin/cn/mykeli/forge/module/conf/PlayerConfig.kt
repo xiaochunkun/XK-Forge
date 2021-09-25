@@ -17,6 +17,7 @@ import taboolib.platform.compat.replacePlaceholder
 import taboolib.platform.util.hasLore
 import taboolib.platform.util.hasName
 import taboolib.platform.util.isAir
+import taboolib.platform.util.replaceName
 import java.util.regex.Pattern
 
 /**
@@ -44,7 +45,7 @@ class PlayerConfig constructor(player: Player) {
         yml.reload()
         map = arrayListOf()
         yml.getStringList("Map").forEach {
-            if (MapConfig.map.containsKey(it)){
+            if (MapConfig.map.containsKey(it)) {
                 map.add(it)
             }
         }
@@ -260,8 +261,19 @@ class PlayerConfig constructor(player: Player) {
     ): ItemStack {
         if (!item.hasLore()) return XMaterial.AIR.parseItem()!!
         val attribute = ProbabilityConfig.map[probability]!![quality]!!.attribute
+        val type = ProbabilityConfig.map[probability]!![quality]!!.type
         val list = arrayListOf<String>()
         val meta = item.itemMeta!!
+        println(strength)
+        val map = ProbabilityConfig.getAttribute(attribute, strength)
+        if (type.equals("random", true)) {
+            var name = meta.displayName
+            val m = Pattern.compile("<(.*?)>").matcher(name)
+            while (m.find()) {
+                name = name.replace(m.group(0), map[m.group(0)]!!)
+            }
+            meta.setDisplayName(name)
+        }
         meta.lore?.forEach {
             var lore = it
 
@@ -280,21 +292,29 @@ class PlayerConfig constructor(player: Player) {
             if (lore.contains("%time%")) {
                 lore = lore.replace("%time%", ItemUtil.getTime(), true)
             }
-
-            if (lore.contains("<") && lore.contains(":") && lore.contains(">")) {
-                //通过正则 取出对应数字   如果是<攻击力:50> 那么HashMap放的就是(攻击力,50)
-                // 如果是<攻击力:50> - <攻击力2:100> 那么HashMap放的就是(攻击力,50)(攻击力2,100)
-                val m = Pattern.compile("<(.*?):(.*?)>").matcher(lore)
-                if (m.find()) {
-                    var start = 0
-                    while (m.find(start)) {
-                        val key = m.group(1)
-                        val num = m.group(2)
-                        start = m.end()
-                        if (!attribute.containsKey(key)) continue
-                        val str = attribute[key]!!.replace("%值%", num).replace("%强度%", strength.toString())
-                        val att = str.compileJS()?.eval() ?: continue
-                        lore = lore.replace("<$key:$num>", att.toString())
+            if (type.equals("random", true)) {
+                map.keys.forEach { key ->
+                    if (lore.contains(key)) {
+                        lore = lore.replace(key, map[key]!!)
+                    }
+                }
+            } else {
+                if (lore.contains("<") && lore.contains(":") && lore.contains(">")) {
+                    //通过正则 取出对应数字   如果是<攻击力:50> 那么HashMap放的就是(攻击力,50)
+                    // 如果是<攻击力:50> - <攻击力2:100> 那么HashMap放的就是(攻击力,50)(攻击力2,100)
+                    val m = Pattern.compile("<(.*?):(.*?)>").matcher(lore)
+                    if (m.find()) {
+                        var start = 0
+                        while (m.find(start)) {
+                            val key = m.group(1)
+                            val num = m.group(2)
+                            start = m.end()
+                            if (!attribute.containsKey(key)) continue
+                            val str =
+                                attribute[key]!!.toString().replace("%值%", num).replace("%强度%", strength.toString())
+                            val att = (str.compileJS()?.eval() ?: continue) as String
+                            lore = lore.replace("<$key:$num>", att)
+                        }
                     }
                 }
             }

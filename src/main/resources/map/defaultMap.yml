@@ -19,3 +19,14 @@
     下级装备核心: 5
   #节点取自probability文件夹
   Probability: '默认品质'
+新手剑图纸:
+  Type: item
+  Study: true
+  Level: 1
+  Exp: 1
+  Map: '新手剑图纸'
+  Item: '新手剑'
+  Material:
+    一阶锻造材料: 10
+    下级装备核心: 5
+  Probability: '随机品质'

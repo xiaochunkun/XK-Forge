@@ -1,4 +1,5 @@
 默认品质:
+  Type: 'forge'
   #品质名称
   '&8粗糙':
     #权重  当前weight/所有品质weight之和
