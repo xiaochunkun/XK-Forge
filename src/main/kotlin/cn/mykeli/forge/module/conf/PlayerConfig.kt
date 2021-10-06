@@ -270,7 +270,9 @@ class PlayerConfig constructor(player: Player) {
             val m = Pattern.compile("<(.*?)>").matcher(name)
             while (m.find()) {
                 val random = map[m.group(0)]
-                name = name.replace(m.group(0), random as String)
+                if (random != null && random.size >= 0) {
+                    name = name.replace(m.group(0), random[0])
+                }
             }
             meta.setDisplayName(name)
         }
@@ -297,13 +299,15 @@ class PlayerConfig constructor(player: Player) {
                     if (lore.contains(key)) {
                         val random = map[key]
                         if (random != null) {
-                            if (random is List<*> && random.size >= 0) {
-                                lore = lore.replace(key, "")
-                                random.forEach { rd ->
-                                    list.add("§7$rd")
+                            if (random.size >= 0) {//没做完
+                                if (random.size > 1) {
+                                    lore = lore.replace(key, "")
+                                    random.forEach { rd ->
+                                        list.add("§7$rd")
+                                    }
+                                } else {
+                                    lore = lore.replace(key, random[0])
                                 }
-                            }else{
-                                lore = lore.replace(key, random as String)
                             }
                         }
                     }
