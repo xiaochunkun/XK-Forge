@@ -75,25 +75,25 @@ object ProbabilityConfig {
 
     }
 
-    fun getAttribute(attribute: HashMap<String, Any>, strength: Int): HashMap<String, List<String>> {
-        val attMap = hashMapOf<String, List<String>>()
+    fun getAttribute(attribute: HashMap<String, Any>, strength: Int): HashMap<String, Any> {
+        val attMap = hashMapOf<String, Any>()
         attribute.keys.forEach {
             val data = attribute[it] as RandomSub
             when (data.type) {
                 Type.FIXED -> {
-                    attMap[it] = listOf(data.value)
+                    attMap[it] = data.value
                 }
                 Type.RANDOM -> {
-                    attMap[it] = listOf(random(data.value1, data.value2).toString())
+                    attMap[it] = random(data.value1, data.value2).toString()
                 }
                 Type.STRENGTH -> {
-                    attMap[it] = listOf((data.base + data.add * strength).toString())
+                    attMap[it] = (data.base + data.add * strength).toString()
                 }
                 Type.DOUBLE -> {
-                    attMap[it] = listOf(String.format("%.${data.decimal}f", (random(data.start, data.end))))
+                    attMap[it] = String.format("%.${data.decimal}f", (random(data.start, data.end)))
                 }
                 Type.LIST -> {
-                    attMap[it] = listOf(data.list[random(data.list.size)])
+                    attMap[it] = data.list[random(data.list.size)]
                 }
                 Type.LORE -> {
                     attMap[it] = data.lore
