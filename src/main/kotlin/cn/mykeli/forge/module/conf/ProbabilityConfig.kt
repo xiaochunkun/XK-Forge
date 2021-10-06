@@ -60,7 +60,8 @@ object ProbabilityConfig {
                                     se.getInt("$attKey.Decimal", 2),
                                     se.getDouble("$attKey.Start", 0.00),
                                     se.getDouble("$attKey.End", 1.00),
-                                    se.getStringListColored("$attKey.List")
+                                    se.getStringListColored("$attKey.List"),
+                                    se.getStringList("$attKey.Lore").colored()
                                 )
                             }
                         }
@@ -74,25 +75,28 @@ object ProbabilityConfig {
 
     }
 
-    fun getAttribute(attribute: HashMap<String, Any>, strength: Int): HashMap<String, String> {
-        val attMap = hashMapOf<String, String>()
+    fun getAttribute(attribute: HashMap<String, Any>, strength: Int): HashMap<String, List<String>> {
+        val attMap = hashMapOf<String, List<String>>()
         attribute.keys.forEach {
             val data = attribute[it] as RandomSub
             when (data.type) {
                 Type.FIXED -> {
-                    attMap[it] = data.value
+                    attMap[it] = listOf(data.value)
                 }
                 Type.RANDOM -> {
-                    attMap[it] = random(data.value1, data.value2).toString()
+                    attMap[it] = listOf(random(data.value1, data.value2).toString())
                 }
                 Type.STRENGTH -> {
-                    attMap[it] = (data.base + data.add * strength).toString()
+                    attMap[it] = listOf((data.base + data.add * strength).toString())
                 }
                 Type.DOUBLE -> {
-                    attMap[it] = String.format("%.${data.decimal}f", (random(data.start, data.end)))
+                    attMap[it] = listOf(String.format("%.${data.decimal}f", (random(data.start, data.end))))
                 }
                 Type.LIST -> {
-                    attMap[it] = data.list[random(data.list.size)]
+                    attMap[it] = listOf(data.list[random(data.list.size)])
+                }
+                Type.LORE -> {
+                    attMap[it] = data.lore
                 }
             }
         }
@@ -139,7 +143,8 @@ object ProbabilityConfig {
         val decimal: Int,
         val start: Double,
         val end: Double,
-        val list: List<String>
+        val list: List<String>,
+        val lore: List<String>
     )
 
     enum class Type {
@@ -147,6 +152,7 @@ object ProbabilityConfig {
         RANDOM,
         STRENGTH,
         DOUBLE,
-        LIST
+        LIST,
+        LORE
     }
 }

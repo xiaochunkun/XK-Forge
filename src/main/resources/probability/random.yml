@@ -7,7 +7,8 @@
       #配置中的节点
       等级:
         #数值类型，fixed固定内容, random随机整数(value1必须小于value2)，
-        #strength强度类型，list随机文本，double随机小数(Start必须小于End)
+        #strength强度类型，list随机文本，double随机小数(Start必须小于End),lore全部
+        #（一般适用于把单行替换成固定内容）
         Type: fixed
         Value: '&7粗糙'
       暴击几率:
@@ -30,9 +31,14 @@
       前缀词:
         Type: list
         List:
-          - 开裂的
-          - 生锈的
-          - 弯曲的
+          - '开裂的'
+          - '生锈的'
+          - '弯曲的'
+      属性:
+        Type: lore
+        Lore:
+          - '&7攻击力 ： 50'
+          - '&7防御力 ： 20'
   普通:
     Weight: 2
     Attribute:
@@ -60,6 +66,11 @@
       前缀词:
         Type: list
         List:
-          - 淬火的
-          - 平衡的
-          - 精良的
+          - '淬火的'
+          - '平衡的'
+          - '精良的'
+      属性:
+        Type: lore
+        Lore:
+          - '&7攻击力 ： 100'
+          - '&7防御力 ： 40'

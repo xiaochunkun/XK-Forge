@@ -264,13 +264,15 @@ class PlayerConfig constructor(player: Player) {
         val type = ProbabilityConfig.map[probability]!![quality]!!.type
         val list = arrayListOf<String>()
         val meta = item.itemMeta!!
-        println(strength)
         val map = ProbabilityConfig.getAttribute(attribute, strength)
         if (type.equals("random", true)) {
             var name = meta.displayName
             val m = Pattern.compile("<(.*?)>").matcher(name)
             while (m.find()) {
-                name = name.replace(m.group(0), map[m.group(0)]!!)
+                val random = map[m.group(0)]
+                if (random != null && random.size >= 0) {
+                    name = name.replace(m.group(0), random[0])
+                }
             }
             meta.setDisplayName(name)
         }
@@ -295,7 +297,19 @@ class PlayerConfig constructor(player: Player) {
             if (type.equals("random", true)) {
                 map.keys.forEach { key ->
                     if (lore.contains(key)) {
-                        lore = lore.replace(key, map[key]!!)
+                        val random = map[key]
+                        if (random != null) {
+                            if (random.size >= 0) {//没做完
+                                if (random.size > 1) {
+                                    lore = lore.replace(key, "")
+                                    random.forEach { rd ->
+                                        list.add("§7$rd")
+                                    }
+                                } else {
+                                    lore = lore.replace(key, random[0])
+                                }
+                            }
+                        }
                     }
                 }
             } else {
@@ -311,14 +325,17 @@ class PlayerConfig constructor(player: Player) {
                             start = m.end()
                             if (!attribute.containsKey(key)) continue
                             val str =
-                                attribute[key]!!.toString().replace("%值%", num).replace("%强度%", strength.toString())
+                                attribute[key]!!.toString().replace("%值%", num)
+                                    .replace("%强度%", strength.toString())
                             val att = (str.compileJS()?.eval() ?: continue) as String
                             lore = lore.replace("<$key:$num>", att)
                         }
                     }
                 }
             }
-            list.add(lore)
+            if (lore.isNotEmpty()) {
+                list.add("§7$lore")
+            }
         }
         meta.lore = list
         item.itemMeta = meta

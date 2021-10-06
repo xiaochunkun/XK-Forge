@@ -1,6 +1,6 @@
 plugins {
     java
-    id("io.izzel.taboolib") version "1.26"
+    id("io.izzel.taboolib") version "1.30"
     id("org.jetbrains.kotlin.jvm") version "1.5.10"
 }
 
@@ -21,11 +21,13 @@ taboolib {
         "module-configuration",
         "module-lang",
         "module-chat",
-        "module-ui"
+        "module-ui",
+        "module-nms",
+        "module-nms-util"
     )
 
     classifier = null
-    version = "6.0.3-2"
+    version = "6.0.3-8"
 }
 
 repositories {

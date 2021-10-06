@@ -11,12 +11,14 @@ import io.lumine.xikage.mythicmobs.items.MythicItem
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
+import org.json.simple.ItemList
 import taboolib.common.platform.function.console
 import taboolib.common.util.random
 import taboolib.library.configuration.ConfigurationSection
 import taboolib.library.xseries.XMaterial
 import taboolib.module.configuration.util.getStringColored
 import taboolib.module.configuration.util.getStringListColored
+import taboolib.module.nms.*
 import taboolib.platform.util.buildItem
 import taboolib.platform.util.isAir
 import java.time.LocalDateTime
@@ -49,7 +51,7 @@ object ItemUtil {
             )
             return XMaterial.AIR.parseItem()!!
         }
-        return buildItem(material) {
+        var item = buildItem(material) {
             this.name = section.getStringColored(("$key.Name"))
             this.lore.addAll(section.getStringListColored("$key.Lore"))
             this.isUnbreakable = section.getBoolean("$key.Unbreakable", false)
@@ -75,7 +77,23 @@ object ItemUtil {
                 }
             }
         }
-
+        val itemTag = item.getItemTag()
+        val nms = section.getConfigurationSection("$key.Nbt")
+        nms?.getKeys(false)?.forEach {
+            if (it.equals("Attack", true)) {
+                val attack = nms.getConfigurationSection(it)
+                val tag = ItemTag()
+                attack?.getKeys(false)?.forEach { key ->
+                    tag[key] = ItemTagData(attack.getString(key))
+                }
+                val itemList = ItemTagList()
+                itemList.add(tag)
+                itemTag["AttributeModifiers"] = itemList
+            } else {
+                itemTag[it] = ItemTagData(nms.getString(it))
+            }
+        }
+        return item.setItemTag(itemTag)
     }
 
     /**
