@@ -6,6 +6,24 @@ StrengthColor: '54c6e93b2a'
 Strength: '||'
 #强度石是否使用
 Use: true
+# 数据库配置
+Mysql:
+  # 是否使用
+  Use: false
+  # 数据库信息
+  Info:
+    # 地址
+    host: 'localhost'
+    # 端口
+    port: 3306
+    # 用户名
+    user: 'root'
+    # 密码
+    password: 'root'
+    # 库名
+    database: 'test'
+    #表前缀
+    prefix: 'forge'
 #UI界面
 UI:
   #主界面

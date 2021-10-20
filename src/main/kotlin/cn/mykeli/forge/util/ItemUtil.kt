@@ -2,7 +2,6 @@ package cn.mykeli.forge.util
 
 import cn.mykeli.forge.Forge
 import cn.mykeli.forge.module.conf.Config
-import cn.mykeli.forge.module.conf.MessageConfig
 import cn.mykeli.forge.module.conf.ProbabilityConfig
 import cn.mykeli.forge.module.conf.StrengthItemConfig
 import io.lumine.xikage.mythicmobs.MythicMobs
@@ -11,11 +10,10 @@ import io.lumine.xikage.mythicmobs.items.MythicItem
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
-import org.json.simple.ItemList
-import taboolib.common.platform.function.console
 import taboolib.common.util.random
 import taboolib.library.configuration.ConfigurationSection
 import taboolib.library.xseries.XMaterial
+import taboolib.library.xseries.parseToXMaterial
 import taboolib.module.configuration.util.getStringColored
 import taboolib.module.configuration.util.getStringListColored
 import taboolib.module.nms.*
@@ -39,19 +37,7 @@ object ItemUtil {
      */
     fun getItem(section: ConfigurationSection, key: String): ItemStack {
         if (section.getString("$key.Type").equals("mythic", true)) return getMMItem(section.getString(("$key.Name")))
-        var material: XMaterial
-        try {
-            material = XMaterial.matchXMaterial(section.getString("$key.Material")!!).get()
-        } catch (e: Exception) {
-            console().sendMessage(
-                MessageConfig.materialNoFound.replace(
-                    "%material%",
-                    section.getString("$key.Material")
-                )
-            )
-            return XMaterial.AIR.parseItem()!!
-        }
-        var item = buildItem(material) {
+        val item = buildItem(section.getString("$key.Material").parseToXMaterial()) {
             this.name = section.getStringColored(("$key.Name"))
             this.lore.addAll(section.getStringListColored("$key.Lore"))
             this.isUnbreakable = section.getBoolean("$key.Unbreakable", false)

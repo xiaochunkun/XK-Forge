@@ -1,6 +1,5 @@
 package cn.mykeli.forge.module.conf
 
-import cn.mykeli.forge.util.ItemUtil
 import taboolib.common.platform.function.console
 import taboolib.common.platform.function.releaseResourceFile
 import taboolib.common.util.random
@@ -9,10 +8,6 @@ import taboolib.module.configuration.SecuredFile
 import taboolib.module.configuration.util.getStringListColored
 import taboolib.platform.BukkitPlugin
 import java.io.File
-import java.util.*
-import kotlin.collections.HashMap
-import kotlin.collections.LinkedHashMap
-import kotlin.properties.Delegates
 
 /**
  * @author 小坤
@@ -26,23 +21,23 @@ object ProbabilityConfig {
 
     fun loadConfig() {
         map = hashMapOf()
-        if (!file.isDirectory || file.listFiles().isEmpty()) {
+        if (!file.isDirectory || file.listFiles() == null) {
             releaseResourceFile("probability/defaultProbability.yml", true)
             releaseResourceFile("probability/random.yml", true)
         }
-        file.listFiles().forEach {
+        file.listFiles()?.forEach file@{
             if (it.name.endsWith(".yml")) {
                 val name = it.name.replace(".yml", "")
                 val section = Yml(name).yml.getConfigurationSection("")
-                section?.getKeys(false)?.forEach { pKey -> //节点遍历
+                section?.getKeys(false)?.forEach section@{ pKey -> //节点遍历
                     val type = section.getString("$pKey.Type", "forge")
-                    val sec = section.getConfigurationSection(pKey) ?: return@forEach
+                    val sec = section.getConfigurationSection(pKey)
                     val pro = LinkedHashMap<String, Data>()
-                    sec.getKeys(false).forEach { key -> //品质遍历
-                        if (key.equals("Type", true)) return@forEach
+                    sec?.getKeys(false)?.forEach sec@{ key -> //品质遍历
+                        if (key.equals("Type", true)) return@sec
                         val weight = sec.getInt("$key.Weight")
                         val attribute = HashMap<String, Any>()
-                        val se = sec.getConfigurationSection("$key.Attribute") ?: return@forEach
+                        val se = sec.getConfigurationSection("$key.Attribute") ?: return@sec
                         if (type.equals("forge", true)) {
                             se.getKeys(false).forEach { attKey -> //属性遍历
                                 attribute[attKey] = se.getString(attKey)

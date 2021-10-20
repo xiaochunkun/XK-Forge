@@ -23,11 +23,12 @@ taboolib {
         "module-chat",
         "module-ui",
         "module-nms",
-        "module-nms-util"
+        "module-nms-util",
+        "module-database"
     )
 
     classifier = null
-    version = "6.0.3-8"
+    version = "6.0.3-12"
 }
 
 repositories {

@@ -6,6 +6,7 @@ import cn.mykeli.forge.api.event.PlayerForgeCommandEvent
 import cn.mykeli.forge.api.event.PlayerForgeItemEvent
 import cn.mykeli.forge.api.event.PlayerUpLevelEvent
 import cn.mykeli.forge.util.ItemUtil
+import cn.mykeli.forge.util.SQLData
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import taboolib.common.platform.function.console
@@ -17,7 +18,6 @@ import taboolib.platform.compat.replacePlaceholder
 import taboolib.platform.util.hasLore
 import taboolib.platform.util.hasName
 import taboolib.platform.util.isAir
-import taboolib.platform.util.replaceName
 import java.util.regex.Pattern
 
 /**
@@ -32,6 +32,7 @@ class PlayerConfig constructor(player: Player) {
     var exp = 0
     private var map = arrayListOf<String>()
     var historyItem = HashMap<Int, HashMap<String, List<String>>>()
+    lateinit var db: SQLData
 
     companion object {
         val data = HashMap<Player, PlayerConfig>()
@@ -44,18 +45,31 @@ class PlayerConfig constructor(player: Player) {
         data[player] = this
         yml.reload()
         map = arrayListOf()
-        yml.getStringList("Map").forEach {
-            if (MapConfig.map.containsKey(it)) {
-                map.add(it)
+        if (Config.dbUse) {
+            db = Config.db
+            db.getMap(player)?.forEach {
+                if (MapConfig.map.containsKey(it)) {
+                    map.add(it)
+                }
             }
-        }
-        level = yml.getInt("Level", 1)
-        exp = yml.getInt("Exp", 0)
-        val section = yml.getConfigurationSection("Item")
-        section?.getKeys(false)?.forEach {
-            val hashMap = HashMap<String, List<String>>()
-            hashMap[section.getString("$it.Name")] = section.getStringList("$it.Lore")
-            historyItem[it.toInt()] = hashMap
+            level = db.getLevel(player) ?: 1
+            exp = db.getExp(player) ?: 0
+            historyItem = db.getItem(player) ?: hashMapOf()
+            db.updateExp(player, level, exp)
+        } else {
+            yml.getStringList("Map").forEach {
+                if (MapConfig.map.containsKey(it)) {
+                    map.add(it)
+                }
+            }
+            level = yml.getInt("Level", 1)
+            exp = yml.getInt("Exp", 0)
+            val section = yml.getConfigurationSection("Item")
+            section?.getKeys(false)?.forEach {
+                val hashMap = HashMap<String, List<String>>()
+                hashMap[section.getString("$it.Name")] = section.getStringList("$it.Lore")
+                historyItem[it.toInt()] = hashMap
+            }
         }
     }
 
@@ -77,8 +91,12 @@ class PlayerConfig constructor(player: Player) {
             return false
         }
         map.add(name)
-        yml.set("Map", map)
-        yml.saveToFile()
+        if (Config.dbUse) {
+            db.addMap(player, map)
+        } else {
+            yml.set("Map", map)
+            yml.saveToFile()
+        }
         val item = MapConfig.map[name]!!.map
         val displayName =
             if (item.hasName() && item.itemMeta!!.displayName.length > 2) item.itemMeta!!.displayName else name.colored()
@@ -106,9 +124,13 @@ class PlayerConfig constructor(player: Player) {
                 )
             }
         }
-        yml.set("Level", this.level)
-        yml.set("Exp", this.exp)
-        yml.saveToFile()
+        if (Config.dbUse) {
+            db.updateExp(player, level, exp)
+        } else {
+            yml.set("Level", this.level)
+            yml.set("Exp", this.exp)
+            yml.saveToFile()
+        }
         player.sendMessage(
             MessageConfig.addExp.replace("%player%", player.name).replace("%exp%", num.toString())
         )
@@ -120,8 +142,12 @@ class PlayerConfig constructor(player: Player) {
      */
     fun setPlayerLevel(num: Int) {
         this.level = num
-        yml.set("Level", this.level)
-        yml.saveToFile()
+        if (Config.dbUse) {
+            db.updateExp(player, level, exp)
+        } else {
+            yml.set("Level", this.level)
+            yml.saveToFile()
+        }
         player.sendMessage(
             MessageConfig.upLevel.replace("%player%", player.name).replace("%level%", level.toString())
         )
@@ -133,8 +159,12 @@ class PlayerConfig constructor(player: Player) {
      */
     fun addLevel(num: Int) {
         this.level += num
-        yml.set("Level", this.level)
-        yml.saveToFile()
+        if (Config.dbUse) {
+            db.updateExp(player, level, exp)
+        } else {
+            yml.set("Level", this.level)
+            yml.saveToFile()
+        }
         player.sendMessage("")
         player.sendMessage(
             MessageConfig.upLevel.replace("%player%", player.name).replace("%level%", level.toString())
@@ -178,12 +208,16 @@ class PlayerConfig constructor(player: Player) {
         if (item.isAir() || !item.hasItemMeta() || !item.hasName() || !item.hasLore()) return
         val name = item.itemMeta!!.displayName
         val lore = item.itemMeta!!.lore!!
-        yml.set("Item.$num.Name", name)
-        yml.set("Item.$num.Lore", lore)
         var hashMap = HashMap<String, List<String>>()
         hashMap[name] = lore
         this.historyItem[num] = hashMap
-        yml.saveToFile()
+        if (Config.dbUse) {
+            db.addItem(player, historyItem)
+        } else {
+            yml.set("Item.$num.Name", name)
+            yml.set("Item.$num.Lore", lore)
+            yml.saveToFile()
+        }
     }
 
     /**
@@ -264,7 +298,8 @@ class PlayerConfig constructor(player: Player) {
         val type = ProbabilityConfig.map[probability]!![quality]!!.type
         val list = arrayListOf<String>()
         val meta = item.itemMeta!!
-        val map = ProbabilityConfig.getAttribute(attribute, strength)
+        var map = hashMapOf<String, Any>()
+        if (type.equals("random", true)) map = ProbabilityConfig.getAttribute(attribute, strength)
         if (type.equals("random", true)) {
             var name = meta.displayName
             val m = Pattern.compile("<(.*?)>").matcher(name)
@@ -302,7 +337,7 @@ class PlayerConfig constructor(player: Player) {
                                 random.forEach { rd ->
                                     list.add("§7$rd")
                                 }
-                            }else{
+                            } else {
                                 lore = lore.replace(key, random as String)
                             }
                         }
@@ -323,7 +358,7 @@ class PlayerConfig constructor(player: Player) {
                             val str =
                                 attribute[key]!!.toString().replace("%值%", num)
                                     .replace("%强度%", strength.toString())
-                            val att = (str.compileJS()?.eval() ?: continue) as String
+                            val att = (str.compileJS()?.eval() ?: continue).toString()
                             lore = lore.replace("<$key:$num>", att)
                         }
                     }

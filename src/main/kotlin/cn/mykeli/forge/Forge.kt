@@ -14,19 +14,19 @@ import taboolib.platform.BukkitPlugin
  */
 object Forge {
 
-    @Config("config.yml", true)
+    @Config("config.yml")
     lateinit var conf: SecuredFile
         private set
 
-    @Config("level.yml", true)
+    @Config("level.yml")
     lateinit var levelYml: SecuredFile
         private set
 
-    @Config("message.yml", true)
+    @Config("message.yml")
     lateinit var msgYml: SecuredFile
         private set
 
-    @Config("item.yml", true)
+    @Config("item.yml")
     lateinit var itemYml: SecuredFile
         private set
 
@@ -63,3 +63,4 @@ object Forge {
 
     }
 }
+

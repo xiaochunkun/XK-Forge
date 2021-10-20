@@ -1,12 +1,15 @@
 package cn.mykeli.forge.module.conf
 
 import cn.mykeli.forge.Forge
+import cn.mykeli.forge.util.SQLData
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import taboolib.common.platform.function.console
 import taboolib.library.xseries.XMaterial
 import taboolib.module.configuration.util.getStringColored
+import taboolib.module.database.HostSQL
+import taboolib.module.database.getHost
 
 /**
  * @author 小坤
@@ -25,6 +28,7 @@ object Config {
     var mainNextItem = XMaterial.AIR.parseItem()
     var mainItem = HashMap<Int, ItemStack>()
     var mainMap = listOf<String>()
+    lateinit var db: SQLData
 
     var forgeTitle = ""
     var forgeRows = 6
@@ -35,6 +39,10 @@ object Config {
     var forgeStrengthItemName = "显示强度石位置"
     var forgeItem = HashMap<Int, ItemStack>()
     var forgeMaterial = listOf<String>()
+
+    var dbUse = false
+    lateinit var dbHost: HostSQL
+    var dbPrefix = "forge"
 
     fun loadConfig() {
         yml.reload()
@@ -66,7 +74,10 @@ object Config {
         forgeItemSection?.getKeys(false)?.forEach {
             forgeItem[it.toInt()] = ItemConfig.getItem(forgeItemSection.getString(it))
         }
-
+        dbUse = yml.getBoolean("Mysql.Use",false)
+        dbHost = yml.getHost("Mysql.Info")
+        dbPrefix = yml.getString("Mysql.Info.prefix","forge")
+        if (dbUse) db = SQLData()
         console().sendMessage(MessageConfig.configLoad)
     }
 
