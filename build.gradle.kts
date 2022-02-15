@@ -1,6 +1,7 @@
 plugins {
-    java
-    id("io.izzel.taboolib") version "1.30"
+    `java-library`
+    `maven-publish`
+    id("io.izzel.taboolib") version "1.34"
     id("org.jetbrains.kotlin.jvm") version "1.5.10"
 }
 
@@ -24,36 +25,28 @@ taboolib {
         "module-ui",
         "module-nms",
         "module-nms-util",
-        "module-database"
+        "module-database",
+        "expansion-javascript"
     )
 
     classifier = null
-    version = "6.0.3-12"
+    version = "6.0.7-6"
 }
 
 repositories {
     mavenCentral()
     maven {
-        isAllowInsecureProtocol = true
-        setUrl("http://xkmy.club/repository/")
+        url = uri("https://maven.xkmc6.cn/minecraft")
     }
 }
 
 dependencies {
-    compileOnly("ink.ptms.core:v11701:11701:mapped")
-    compileOnly("ink.ptms.core:v11701:11701:universal")
-    compileOnly("ink.ptms.core:v11604:11604:all")
-    compileOnly("ink.ptms.core:v11600:11600:all")
-    compileOnly("ink.ptms.core:v11500:11500:all")
-    compileOnly("ink.ptms.core:v11400:11400:all")
-    compileOnly("ink.ptms.core:v11300:11300:all")
-    compileOnly("ink.ptms.core:v11200:11200:all")
-    compileOnly("ink.ptms.core:v11100:11100:all")
-    compileOnly("ink.ptms.core:v11000:11000:all")
-    compileOnly("ink.ptms.core:v10900:10900:all")
-    compileOnly(kotlin("stdlib"))
+    compileOnly("ink.ptms:nms-all:1.0.0")
+    compileOnly("ink.ptms.core:v11800:11800-minimize:api")
+    compileOnly("ink.ptms.core:v11800:11800-minimize:mapped")
     compileOnly(fileTree("libs"))
-    implementation("io.lumine.xikage.mythicmobs:MythicMobs:4.7.2@jar")
+    compileOnly("io.lumine.xikage.mythicmobs:MythicMobs:4.7.2@jar")
+    compileOnly("com.google.code.gson:gson:2.8.9")
 }
 
 tasks.withType<JavaCompile> {
@@ -63,4 +56,25 @@ tasks.withType<JavaCompile> {
 configure<JavaPluginConvention> {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+publishing {
+    repositories {
+        maven {
+            url = uri("https://repo.tabooproject.org/repository/releases")
+            credentials {
+                username = project.findProperty("taboolibUsername").toString()
+                password = project.findProperty("taboolibPassword").toString()
+            }
+            authentication {
+                create<BasicAuthentication>("basic")
+            }
+        }
+    }
+    publications {
+        create<MavenPublication>("library") {
+            from(components["java"])
+            groupId = project.group.toString()
+        }
+    }
 }

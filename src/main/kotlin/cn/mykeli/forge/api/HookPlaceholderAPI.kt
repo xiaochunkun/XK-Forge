@@ -11,16 +11,19 @@ object HookPlaceholderAPI : PlaceholderExpansion {
 
     override val identifier = "forge"
 
-    override fun onPlaceholderRequest(player: Player, args: String): String {
-        if (player.isOnline) {
-            val data = PlayerConfig.data[player]!!
-            return when (args.lowercase()) {
-                "level" -> data.level
-                "exp" -> data.exp
-                "needexp" -> data.needExp()
-                "name" -> data.getLevelName()
-                else -> ""
-            }.toString()
+    override fun onPlaceholderRequest(player: Player?, args: String): String {
+        player?.let {
+            if (it.isOnline) {
+                PlayerConfig.data[it]?.let { data ->
+                    return when (args.lowercase()) {
+                        "level" -> data.level
+                        "exp" -> data.exp
+                        "needexp" -> data.needExp()
+                        "name" -> data.getLevelName()
+                        else -> ""
+                    }.toString()
+                }
+            }
         }
         return ""
     }

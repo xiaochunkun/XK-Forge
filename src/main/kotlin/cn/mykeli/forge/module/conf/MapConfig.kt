@@ -44,10 +44,10 @@ object MapConfig {
                     sec?.getKeys(false)?.forEach { k ->
                         material[k] = sec.getInt(k)
                     }
-                    var map = ItemConfig.getItem(section.getString("$key.Map"))
+                    val map = ItemConfig.getItem(section.getString("$key.Map")!!)
                     if (section.getString("$key.Type").equals("item", true)) {
-                        val item = section.getString("$key.Item")
-                        val probability = section.getString("$key.Probability")
+                        val item = section.getString("$key.Item")!!
+                        val probability = section.getString("$key.Probability")!!
                         this.map[key] = ItemData(
                             "item",
                             study,
@@ -127,7 +127,7 @@ object MapConfig {
 
         init {
             try {
-                yml.load(
+                yml.loadFromFile(
                     File(
                         file,
                         "/$name.yml"

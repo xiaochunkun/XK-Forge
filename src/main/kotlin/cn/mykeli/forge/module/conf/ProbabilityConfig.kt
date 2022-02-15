@@ -30,7 +30,7 @@ object ProbabilityConfig {
                 val name = it.name.replace(".yml", "")
                 val section = Yml(name).yml.getConfigurationSection("")
                 section?.getKeys(false)?.forEach section@{ pKey -> //节点遍历
-                    val type = section.getString("$pKey.Type", "forge")
+                    val type = section.getString("$pKey.Type", "forge")!!
                     val sec = section.getConfigurationSection(pKey)
                     val pro = LinkedHashMap<String, Data>()
                     sec?.getKeys(false)?.forEach sec@{ key -> //品质遍历
@@ -40,14 +40,14 @@ object ProbabilityConfig {
                         val se = sec.getConfigurationSection("$key.Attribute") ?: return@sec
                         if (type.equals("forge", true)) {
                             se.getKeys(false).forEach { attKey -> //属性遍历
-                                attribute[attKey] = se.getString(attKey)
+                                attribute[attKey] = se.getString(attKey)!!
                             }
                         }
                         if (type.equals("random", true)) {
                             se.getKeys(false).forEach { attKey ->
                                 attribute["<$attKey>"] = RandomSub(
-                                    Type.valueOf(se.getString("$attKey.Type", "fixed").uppercase()),
-                                    se.getString("$attKey.Value", "&7粗糙").colored(),
+                                    Type.valueOf(se.getString("$attKey.Type", "fixed")!!.uppercase()),
+                                    se.getString("$attKey.Value", "&7粗糙")!!.colored(),
                                     se.getInt("$attKey.Value1", 0),
                                     se.getInt("$attKey.Value2", 1),
                                     se.getInt("$attKey.Base", 0),
@@ -109,7 +109,7 @@ object ProbabilityConfig {
 
         init {
             try {
-                yml.load(
+                yml.loadFromFile(
                     File(
                         file,
                         "/$name.yml"

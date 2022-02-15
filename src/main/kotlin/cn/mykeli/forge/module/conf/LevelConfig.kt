@@ -14,7 +14,7 @@ object LevelConfig {
     fun loadConfig() {
         yml.reload()
         level = arrayListOf()
-        yml.getConfigurationSection("").getKeys(false).forEach {
+        yml.getConfigurationSection("")?.getKeys(false)?.forEach {
             val data = Data(
                 it.toInt(),
                 yml.getInt("$it.Exp"),

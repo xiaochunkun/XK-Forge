@@ -89,7 +89,7 @@ object ItemConfig {
 
         init {
             try {
-                yml.load(
+                yml.loadFromFile(
                     File(
                         file,
                         "/$name.yml"

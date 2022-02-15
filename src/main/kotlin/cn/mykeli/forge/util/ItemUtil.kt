@@ -36,8 +36,8 @@ object ItemUtil {
      * @return ItemStack
      */
     fun getItem(section: ConfigurationSection, key: String): ItemStack {
-        if (section.getString("$key.Type").equals("mythic", true)) return getMMItem(section.getString(("$key.Name")))
-        val item = buildItem(section.getString("$key.Material").parseToXMaterial()) {
+        if (section.getString("$key.Type").equals("mythic", true)) return getMMItem(section.getString(("$key.Name"))!!)
+        val item = buildItem(section.getString("$key.Material")!!.parseToXMaterial()) {
             this.name = section.getStringColored(("$key.Name"))
             this.lore.addAll(section.getStringListColored("$key.Lore"))
             this.isUnbreakable = section.getBoolean("$key.Unbreakable", false)

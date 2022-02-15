@@ -67,7 +67,7 @@ class PlayerConfig constructor(player: Player) {
             val section = yml.getConfigurationSection("Item")
             section?.getKeys(false)?.forEach {
                 val hashMap = HashMap<String, List<String>>()
-                hashMap[section.getString("$it.Name")] = section.getStringList("$it.Lore")
+                hashMap[section.getString("$it.Name")!!] = section.getStringList("$it.Lore")
                 historyItem[it.toInt()] = hashMap
             }
         }

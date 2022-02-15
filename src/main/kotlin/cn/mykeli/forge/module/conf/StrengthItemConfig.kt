@@ -16,7 +16,7 @@ object StrengthItemConfig {
     fun loadConfig() {
         yml.reload()
         data = hashMapOf()
-        yml.getConfigurationSection("").getKeys(false).forEach {
+        yml.getConfigurationSection("")?.getKeys(false)?.forEach {
             val item = Data(
                 yml.getInt("$it.Num"),
                 yml.getBoolean("$it.Add")

@@ -46,37 +46,37 @@ object Config {
 
     fun loadConfig() {
         yml.reload()
-        strengthColor = yml.getString("StrengthColor", "54c6e93b2a")
-        strength = yml.getString("Strength", "||")
-        timeFormat = yml.getString("TimeFormat", "yyyy-MM-dd HH:mm:ss")
+        strengthColor = yml.getString("StrengthColor", "54c6e93b2a")!!
+        strength = yml.getString("Strength", "||")!!
+        timeFormat = yml.getString("TimeFormat", "yyyy-MM-dd HH:mm:ss")!!
 
         mainTitle = yml.getStringColored("UI.Main.Title")!!
         mainRows = yml.getInt("UI.Main.Rows")
         mainLast = yml.getInt("UI.Main.Last.Slot")
-        mainLastItem = ItemConfig.getItem(yml.getString("UI.Main.Last.Name"))
+        mainLastItem = ItemConfig.getItem(yml.getString("UI.Main.Last.Name")!!)
         mainNext = yml.getInt("UI.Main.Next.Slot")
-        mainNextItem = ItemConfig.getItem(yml.getString("UI.Main.Next.Name"))
-        mainMap = yml.getString("UI.Main.Map").replace(" ", "").split(",")
+        mainNextItem = ItemConfig.getItem(yml.getString("UI.Main.Next.Name")!!)
+        mainMap = yml.getString("UI.Main.Map")!!.replace(" ", "").split(",")
         val mainItemSection = yml.getConfigurationSection("UI.Main.Item")
         mainItemSection?.getKeys(false)?.forEach {
-            mainItem[it.toInt()] = ItemConfig.getItem(mainItemSection.getString(it))
+            mainItem[it.toInt()] = ItemConfig.getItem(mainItemSection.getString(it)!!)
         }
 
         forgeTitle = yml.getStringColored("UI.Forge.Title")!!
         forgeRows = yml.getInt("UI.Forge.Rows")
         forgeMap = yml.getInt("UI.Forge.Map")
         forgeForgeSlot = yml.getInt("UI.Forge.Forge.Slot")
-        forgeForgeName = yml.getString("UI.Forge.Forge.Name")
+        forgeForgeName = yml.getString("UI.Forge.Forge.Name")!!
         forgeStrengthItemSlot = yml.getInt("UI.Forge.StrengthItem.Slot")
-        forgeStrengthItemName = yml.getString("UI.Forge.StrengthItem.Name")
-        forgeMaterial = yml.getString("UI.Forge.Material").replace(" ", "").split(",")
+        forgeStrengthItemName = yml.getString("UI.Forge.StrengthItem.Name")!!
+        forgeMaterial = yml.getString("UI.Forge.Material")!!.replace(" ", "").split(",")
         val forgeItemSection = yml.getConfigurationSection("UI.Forge.Item")
         forgeItemSection?.getKeys(false)?.forEach {
-            forgeItem[it.toInt()] = ItemConfig.getItem(forgeItemSection.getString(it))
+            forgeItem[it.toInt()] = ItemConfig.getItem(forgeItemSection.getString(it)!!)
         }
         dbUse = yml.getBoolean("Mysql.Use",false)
         dbHost = yml.getHost("Mysql.Info")
-        dbPrefix = yml.getString("Mysql.Info.prefix","forge")
+        dbPrefix = yml.getString("Mysql.Info.prefix","forge")!!
         if (dbUse) db = SQLData()
         console().sendMessage(MessageConfig.configLoad)
     }
